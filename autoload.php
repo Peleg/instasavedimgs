@@ -1,7 +1,6 @@
 <?php
 
 function exception_error_handler($errno, $errstr, $errfile, $errline) {
-  die('FUCK');
   throw new ErrorException($errstr, $errno, 0, $errfile, $errline);
 }
 
