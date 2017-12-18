@@ -26,7 +26,7 @@ function getSavedUsernames($ig, $maxId = false) {
 }
 
 function tryGetEmail($webUrl, $bio) {
-  $emailRegex = '/([0-9a-z_\.]+@[0-9a-z_\.]+)/i';
+  $emailRegex = '/([0-9a-z_\.]+@[0-9a-z_\.]+?\.[a-z]+)/i';
 
   if (preg_match($emailRegex, $webUrl, $matches)) { // url IS email
     return $matches[0];
@@ -53,6 +53,14 @@ function tryGetEmail($webUrl, $bio) {
   return '';
 }
 
+function getCleanName($name) {
+  $nameRegex = "~([a-zA-Z0-9_ !@#$%^&*();\\\/|<>\"'+.,:?=-]+)~";
+  if (preg_match($nameRegex, $name, $matches)) { // bio HAS email
+    return $matches[0];
+  }
+  return $name;
+}
+
 $username = 'brizoloves';
 $password = getenv('BRIZO_INSTA_PASSWORD');
 $ig = new \InstagramAPI\Instagram();
@@ -61,15 +69,16 @@ $ig->login($username, $password);
 $uniqueUsernames = array_unique(getSavedUsernames($ig));
 
 $fp = fopen('./out/users.csv', 'w');
-fputcsv($fp, ['NAME', 'USERNAME', 'FOLLOWERS', 'EMAIL', 'URL', 'BIO']);
+fputcsv($fp, ['NAME', 'USERNAME', 'FOLLOWERS', '', 'EMAIL', 'URL', 'BIO']);
 
 foreach($uniqueUsernames as $username) {
   $user = $ig->people->getInfoByName($username)->user;
   fputcsv($fp, [
-    $user->full_name,
+    getCleanName($user->full_name),
     $user->username,
     $user->follower_count,
     tryGetEmail($user->external_url, $user->biography),
+    '', // email link column
     $user->external_url,
     $user->biography
   ]);
