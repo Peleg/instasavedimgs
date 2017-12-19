@@ -58,7 +58,7 @@ function getCleanName($name) {
   if (preg_match($nameRegex, $name, $matches)) { // bio HAS email
     return $matches[0];
   }
-  return $name;
+  return $name ?: 'there';
 }
 
 $username = 'brizoloves';
