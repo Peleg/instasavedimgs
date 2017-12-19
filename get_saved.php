@@ -26,7 +26,7 @@ function getSavedUsernames($ig, $maxId = false) {
 }
 
 function tryGetEmail($webUrl, $bio) {
-  $emailRegex = '/([0-9a-z_\.]+@[0-9a-z_\.]+?\.[a-z]+)/i';
+  $emailRegex = '/([0-9a-z_\.-]+@[0-9a-z_-]+[\.a-z]+)/i';
 
   if (preg_match($emailRegex, $webUrl, $matches)) { // url IS email
     return $matches[0];
